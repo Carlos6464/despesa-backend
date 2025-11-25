@@ -1,0 +1,26 @@
+# --- Core & API ---
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+python-dotenv
+email-validator        # Para validar emails nos Schemas Pydantic
+
+# --- Banco de Dados (PostgreSQL) ---
+sqlalchemy             # O ORM (para manipular o banco com Python)
+psycopg2-binary        # O driver do PostgreSQL (versão binária é mais fácil de instalar)
+alembic                # Para criar e rodar as migrações (tabelas)
+
+# --- Segurança & Autenticação ---
+passlib[bcrypt]        # Para fazer o hash das senhas (nunca salvar senha pura!)
+python-jose[cryptography] # Para criar e validar os Tokens JWT (Login)
+python-multipart       # Necessário para o Login (OAuth2 form data)
+bcrypt==4.0.1
+
+# --- Integrações ---
+httpx                  # Para fazer requisições (chamar Evolution API / Typebot)
+stripe                 # SDK oficial do Stripe para pagamentos
+
+# --- Testes (Opcional mas recomendado) ---
+pytest
+httpx                  # Já listado acima, mas usado também nos testes

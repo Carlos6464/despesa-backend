@@ -1,0 +1,41 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Ambientes Virtuais ---
+venv/
+.venv/
+env/
+
+# --- Variáveis de Ambiente e Segredos (CRÍTICO) ---
+.env
+.env.prod
+.env.dev
+*.env
+
+# --- Credenciais do Google (Se houver resquícios) ---
+*credentials.json
+fastagenda-credentials.json
+
+# --- Banco de Dados Local (SQLite ou Volumes Docker) ---
+*.sqlite3
+*.db
+postgres_data/
+
+# --- IDEs e Editores ---
+.vscode/
+.idea/
+*.swp
+
+# --- Logs ---
+*.log
+
+# --- Testes e Cobertura ---
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Sistema Operacional ---
+.DS_Store
+Thumbs.db

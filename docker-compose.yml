@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # --- Serviço do Banco de Dados ---
+  db:
+    image: postgres:15
+    container_name: saas_db
+    restart: always
+    environment:
+      - POSTGRES_USER=saas_user
+      - POSTGRES_PASSWORD=saas_password
+      - POSTGRES_DB=saas_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # --- Serviço da API (FastAPI) ---
+  web:
+    build: .  # Constrói a imagem a partir do Dockerfile na pasta atual
+    container_name: saas_api
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"  # Expõe a porta 8000 do container para a 8000 do seu PC
+    volumes:
+      - .:/app  # Sincroniza sua pasta local com o container (Hot Reload funciona!)
+    depends_on:
+      - db  # Só inicia depois que o banco subir
+    environment:
+      # ATENÇÃO: Dentro do Docker, o host do banco não é 'localhost', é 'db'
+      - DATABASE_URL=postgresql://saas_user:saas_password@db:5432/saas_db
+      - SECRET_KEY=sua-chave-secreta-aqui
+      # ... outras variáveis do .env podem ser colocadas aqui ou lidas de env_file
+
+volumes:
+  postgres_data:
+    driver: local  # Usa o driver local para persistência dos dados do banco
