@@ -106,3 +106,170 @@ Rel(apiGateway, assinaturaMS, "Gerencia assinatura")
 Rel(transactionsMS, aiMS, "Solicita análise IA")
 
 @enduml
+🧱 C2 — Containers
+wsd
+Copiar código
+@startuml C2_Containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+System_Boundary(authMS, "Auth Service") {
+  Container(authAPI, "Auth API", "NestJS")
+  ContainerDb(authDB, "Auth DB", "PostgreSQL")
+}
+
+System_Boundary(usersMS, "Users Service") {
+  Container(usersAPI, "Users API", "NestJS")
+  ContainerDb(usersDB, "Users DB", "PostgreSQL")
+}
+
+System_Boundary(categoriesMS, "Categories Service") {
+  Container(categoriesAPI, "Categories API", "NestJS")
+  ContainerDb(categoriesDB, "Categories DB", "PostgreSQL")
+}
+
+System_Boundary(transactionsMS, "Transactions Service") {
+  Container(transactionsAPI, "Transactions API", "NestJS")
+  ContainerDb(transactionsDB, "Transactions DB", "PostgreSQL")
+}
+
+System_Boundary(plansMS, "Plans Service") {
+  Container(plansAPI, "Plans API", "NestJS")
+  ContainerDb(plansDB, "Plans DB", "PostgreSQL")
+}
+
+System_Boundary(assinaturaMS, "Assinatura Service") {
+  Container(assinaturaAPI, "Assinatura API", "NestJS")
+  ContainerDb(assinaturaDB, "Assinatura DB", "PostgreSQL")
+}
+
+System_Boundary(aiMS, "AI Service") {
+  Container(aiAPI, "FastAPI")
+}
+
+Rel(transactionsAPI, aiAPI, "Envia transação para IA")
+
+@enduml
+🧩 C3 — Componentes (Ex.: Auth Service)
+wsd
+Copiar código
+@startuml C3_Component_Auth
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container(authAPI, "Auth API", "NestJS")
+
+Component(domain, "Domain Layer", "Entities, Value Objects, Domain Services")
+Component(appLayer, "Application Layer", "Use Cases")
+Component(infra, "Infra Layer", "TypeORM Repo, Controllers")
+Component(controller, "AuthController")
+Component(repo, "TypeORMAuthRepository")
+Component(jwtService, "JwtService")
+
+Rel(controller, appLayer, "Chama use cases")
+Rel(appLayer, repo, "Repository")
+Rel(appLayer, jwtService, "Gera tokens")
+Rel(repo, authDB, "Lê/Escreve via TypeORM")
+
+@enduml
+☁️ C4 — Deployment (Infraestrutura)
+wsd
+Copiar código
+@startuml C4_Deployment
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
+
+Deployment_Node(k8s, "Kubernetes Cluster") {
+
+  Deployment_Node(gateway, "API Gateway Pod") {
+    Container(apiGateway, "API Gateway", "NestJS")
+  }
+
+  Deployment_Node(authNode, "Auth Pod") {
+    Container(auth, "Auth Service", "NestJS")
+  }
+
+  Deployment_Node(usersNode, "Users Pod") {
+    Container(users, "Users Service", "NestJS")
+  }
+
+  Deployment_Node(categoriesNode, "Categories Pod") {
+    Container(categories, "Categories Service")
+  }
+
+  Deployment_Node(transactionsNode, "Transactions Pod") {
+    Container(transactions, "Transactions Service")
+  }
+
+  Deployment_Node(plansNode, "Plans Pod") {
+    Container(plans, "Plans Service")
+  }
+
+  Deployment_Node(assinaturaNode, "Assinatura Pod") {
+    Container(assinatura, "Assinatura Service")
+  }
+
+  Deployment_Node(aiNode, "AI Pod") {
+    Container(ai, "AI Service (FastAPI)")
+  }
+
+  Deployment_Node(dbCluster, "PostgreSQL Cluster") {
+    ContainerDb(mainDB, "PostgreSQL DB")
+  }
+}
+
+@enduml
+📂 Estrutura de Pastas
+bash
+Copiar código
+src
+ ├── core
+ │    ├── domain
+ │    ├── errors
+ │    └── use-cases
+ │
+ ├── modules
+ │    ├── auth
+ │    ├── users
+ │    ├── categories
+ │    ├── transactions
+ │    ├── plans
+ │    └── assinatura
+ │
+ ├── infra
+ │    ├── http
+ │    └── database
+ │
+ └── main.ts
+📌 Como visualizar os diagramas
+🔹 Usando VS Code + PlantUML
+Instalar extensão:
+
+Copiar código
+jebbs.plantuml
+Pressionar:
+
+mathematica
+Copiar código
+ALT + D
+🔹 Visualizadores Online
+https://plantuml.com/plantuml
+
+https://www.planttext.com
+
+https://kroki.io
+
+🚀 Como rodar o projeto
+bash
+Copiar código
+docker-compose up -d
+bash
+Copiar código
+npm install
+npm run start:dev
+📈 Próximos Passos
+✔ Criar repositórios dos microserviços
+✔ Configurar API Gateway
+✔ Implementar Auth com JWT + Refresh Token
+✔ Criar Entities e Value Objects
+✔ Criar o banco com TypeORM + Migrations
+✔ Criar comunicação com o serviço de IA
+✔ Criar documentação do domínio
+
